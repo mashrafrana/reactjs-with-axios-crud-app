@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const VehicleStatus = () => {
 
-    const initialState = {status: ''}
+    const initialState = {id:'',status: ''}
     const [vehicleStatus, setVehicleStatus] = useState(initialState);
     const [vehicleStatusList, setvehicleStatusList] = useState([]);
     const [showCreate, setshowCreate] = useState(false);
@@ -17,7 +17,7 @@ const VehicleStatus = () => {
     
     const handleInputChange = event => {
       const { name, value } = event.target
-      setVehicleStatus({ ...vehicleStatus, [name]: value }) 
+      setVehicleStatus({...vehicleStatus, [name]: value }) 
     }
 
     // Add Modal
@@ -26,6 +26,7 @@ const VehicleStatus = () => {
 
     // Edit Modal
     const handleEditShow = (vehicleStatus) => {
+      console.log(vehicleStatus.status);
       setVehicleStatus({...vehicleStatus ,vehicleStatus});
       setShowEdit(true);
 
@@ -34,7 +35,6 @@ const VehicleStatus = () => {
 
     // Delete Modal
     const handleDeleteShow = (vehicleStatus) => { 
-      console.log(setVehicleStatus);
       setVehicleStatus({...vehicleStatus ,vehicleStatus});
       setShowDelete(true);
       
@@ -43,32 +43,66 @@ const VehicleStatus = () => {
         
     useEffect(() => {
       setLoad(true);
-      axios.get('https://jsonplaceholder.typicode.com/todos/')
-          .then(res => {
+      axios.get('http://192.168.15.106:8000/api/v1/statuses')
+      .then(res => {
             setvehicleStatusList(res.data);
+            console.log(res.data);
             setLoad(false);
-
           })
           .catch(err => {
             console.log(err.message);
-            console.log('error');
             setLoad(true);
           })
     },[]);
 
     const addBrand = () => {
-      setvehicleStatusList([...vehicleStatus, vehicleStatus] )
+    
+      axios.post('http://192.168.15.106:8000/api/v1/statuses',
+      vehicleStatus
+      )
+      .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err.message);
+          })
+
+      setvehicleStatusList([...vehicleStatusList, vehicleStatus])
       setshowCreate(false);
+      setVehicleStatus(initialState);
     }
 
     const updateBrand = () => {
-      setvehicleStatusList(vehicleStatusList.map(b => (b.id === setVehicleStatus.id ? setVehicleStatus : b)))
+     
+      axios.put('http://192.168.15.106:8000/api/v1/statuses/'+vehicleStatus.id,
+      vehicleStatus
+      )
+      .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err.message);
+          })
+     
+      setvehicleStatusList(vehicleStatusList.map(b => (b.id === vehicleStatus.id ? vehicleStatus : b)))
       setShowEdit(false);
+      setVehicleStatus(initialState);
+      
     }
 
     const deleteBrand = () => {
-      setvehicleStatusList(vehicleStatusList.filter(b => b.id !== setVehicleStatus.id));
+
+      axios.delete('http://192.168.15.106:8000/api/v1/statuses/'+vehicleStatus.id)
+      .then(res => {
+            console.log(res.data);
+          })
+          .catch(err => {
+            console.log(err.message);
+      })
+      setvehicleStatusList(vehicleStatusList.filter(b => b.id !== vehicleStatus.id));
       setShowDelete(false);
+      setVehicleStatus(initialState);
+      
     }
 
   return (
@@ -76,9 +110,9 @@ const VehicleStatus = () => {
       <div className="main-nav nav-top-margin">
         <div className="container mt-5 ">         
           <Button className="float-right mb-md-3" onClick={handleCreateShow}>
-            Add Teams 
+            Add Vehicle Status
           </Button>
-          <h2 className="float-left ml-md-3">Teams</h2>        
+          <h2 className="float-left ml-md-3">Vehicle Status</h2>        
         <TableList
           thName ={thArray}
           tdData =        
@@ -86,7 +120,7 @@ const VehicleStatus = () => {
               ? vehicleStatusList.map((vehicleStatus, index) => (
                   <tr key={index}>
                     <td>{vehicleStatus.id}</td>
-                    <td>{vehicleStatus.title}</td>
+                    <td>{vehicleStatus.status}</td>
                     <td><Button onClick={() => handleEditShow(vehicleStatus)}>Edit</Button></td>
                     <td><Button onClick={() => handleDeleteShow(vehicleStatus)}>Delete</Button></td>
                   </tr>
@@ -110,9 +144,9 @@ const VehicleStatus = () => {
           {/* Create Modal */}
           <CreateModal
               showModal={showCreate}
-                title="Add Teams Ashraf Bhai"
+                title="Add Vehicle Status"
                 closeModal={handleCreateClose}
-                btnText = "Create Team"
+                btnText = "Create"
                 action = {addBrand}
                 content={
                 <Form >  
@@ -147,7 +181,10 @@ const VehicleStatus = () => {
         btnText = "Detele Team"
         action = {deleteBrand}
         content={
-        <p>Are you sure to delete this Team</p>
+          <>
+        <p>Are you sure to delete this Status</p>
+        <p>{vehicleStatus.status}</p>
+        </>
           }/>
         </div>
       </div>
