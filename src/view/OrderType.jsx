@@ -4,9 +4,11 @@ import {Form, Button , Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import CreateModal from '../component/CreateModal';
 import TableList from '../component/TableList';
+import {config} from '../services/Constant';
 
 const OrderType = () => {
 
+    const url = config+'/orders'  
     let title = "Order Type";
     const initialRecord = {id:'',name: ''}
     const [record, setRecord] = useState(initialRecord);
@@ -47,7 +49,7 @@ const OrderType = () => {
         
     useEffect(() => {
       setLoad(true);
-      axios.get('http://192.168.15.106:8000/api/v1/orders')
+      axios.get(config+'/orders')
       .then(res => {
             setRecordList(res.data);
             setLoad(false);
@@ -60,9 +62,7 @@ const OrderType = () => {
 
     const addRecord = () => {
     
-      axios.post('http://192.168.15.106:8000/api/v1/orders',
-      record
-      )
+      axios.post(url,record)
       .then(res => {   
          
         toast.success('Record Added Successfully' , { autoClose: 3000 });
@@ -78,7 +78,7 @@ const OrderType = () => {
 
     const updateRecord = () => {
      
-      axios.put('http://192.168.15.106:8000/api/v1/orders/'+record.id,
+      axios.put(url+'/'+record.id,
       record
       )
       .then(res => {
@@ -100,7 +100,7 @@ const OrderType = () => {
 
     const deleteRecord = () => {
 
-      axios.delete('http://192.168.15.106:8000/api/v1/orders/'+record.id)
+      axios.delete(url+'/'+record.id)
       .then(res => {
       
           toast.success('Record Deleted Successfully' , { autoClose: 3000 });
