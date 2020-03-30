@@ -1,11 +1,10 @@
 import React from 'react';
-import './App.css';
-import VehicleStatus from './view/VehicleStatus';
+import OrderType from './view/OrderType';
 
 function App() {
   return (
 
-    <VehicleStatus/>
+    <OrderType/>
 
   );
 }

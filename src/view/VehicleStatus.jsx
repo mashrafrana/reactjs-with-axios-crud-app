@@ -143,7 +143,7 @@ const VehicleStatus = () => {
           
           {/* Create Modal */}
           <CreateModal
-              showModal={showCreate}
+                showModal={showCreate}
                 title="Add Vehicle Status"
                 closeModal={handleCreateClose}
                 btnText = "Create"
@@ -175,15 +175,15 @@ const VehicleStatus = () => {
              
           {/* Delete Modal */}
         <CreateModal
-            showModal={showDelete}
+        showModal={showDelete}
         title="Delete Teams "
         closeModal={handleDeleteClose}
         btnText = "Detele Team"
         action = {deleteBrand}
         content={
-          <>
-        <p>Are you sure to delete this Status</p>
-        <p>{vehicleStatus.status}</p>
+        <>
+          <p>Are you sure to delete this Status</p>
+          <p>{vehicleStatus.status}</p>
         </>
           }/>
         </div>
